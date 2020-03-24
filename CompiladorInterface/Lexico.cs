@@ -199,7 +199,9 @@ namespace CompiladorInterface {
             string line;
             List<string> listaLinhas = new List<string>();
             //Read the file and display it line by line.
-            System.IO.StreamReader file = new System.IO.StreamReader("..//..//Codigo.txt");
+            var path = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "Codigo.txt");
+            System.IO.StreamReader file;
+            file = new System.IO.StreamReader(path);
             while ((line = file.ReadLine()) != null) {
                 if (!string.IsNullOrWhiteSpace(line)) {
                     numLinha++;
