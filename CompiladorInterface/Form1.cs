@@ -21,7 +21,6 @@ namespace CompiladorInterface {
 
         private void ModificarCodigo_Click_1(object sender, EventArgs e) {
             var path = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "Codigo.txt");
-
             Process.Start("notepad.exe", path);
         }
 
