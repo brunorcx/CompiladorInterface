@@ -253,6 +253,9 @@ namespace CompiladorInterface {
                             tamanho++;
                         }
 
+                        //O problema do ponto está em separar um número com vírgula
+                        //Assim, ponto não é adicionado aos caracteres especiais
+
                         if (tamanho != 0) {
                             workRow = tabela.NewRow();
                             sTemp = linha.Substring(inicial, tamanho);
