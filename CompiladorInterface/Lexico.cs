@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace CompiladorInterface {
 
@@ -247,10 +248,17 @@ namespace CompiladorInterface {
                         i++;
                     else {
                         inicial = i;
-                        // CASOS COM CARACTERES ESPECIAIS SEM ESPAÇO
-                        while (linha[i] != ' ' && linha[i] != ';' && !acharSimbolos(linha[i])) {
-                            i++;
-                            tamanho++;
+                        try {
+                            // CASOS COM CARACTERES ESPECIAIS SEM ESPAÇO
+                            while (linha[i] != ' ' && linha[i] != ';' && !acharSimbolos(linha[i])) {
+                                i++;
+                                tamanho++;
+                            }
+
+                        }
+                        catch (Exception) {// Faltou um ; na linha
+                            string erro = "Não foi encontrado um \";\" na linha ' " + linha + " '";
+                            i--;
                         }
 
                         //O problema do ponto está em separar um número com vírgula
@@ -319,13 +327,20 @@ namespace CompiladorInterface {
             if ((lexema[0] >= 65 && lexema[0] <= 90) || (lexema[0] >= 97 && lexema[0] <= 122) || lexema[0] == 95) {
                 return "ID";
             }
-            try {
-                float.Parse(lexema);
-                return "NUM";
+            return IdentificarNumeros(lexema);
+            /*
+            string numero = IdentificarNumeros(lexema);
+            if (numero == "Float") {
+                try {
+                    float.Parse(lexema);
+                    return numero;
+                }
+                catch (Exception) {
+                    numero = "ERRO";
+                }
             }
-            catch (Exception) {
-                return "ERRO";
-            }
+            return numero;
+            */
 
         }
 
@@ -339,6 +354,44 @@ namespace CompiladorInterface {
                     return true;//retornar o operador
             }
             return false;
+        }
+
+        public string IdentificarNumeros(string numero) { // Mudar para private depois
+            //Colocar parâmentro string numero e fazer por números, já tenho as palavras separadas
+
+            //^ é usado para dar match forçando o inicio da palavra
+            // return match.Value + " Float"; para verificar o valor que deu match
+
+            //Regex regex = new Regex(@"^[0-9]*\.[0-9]+|[0-9]+\.[0-9]*");//Float
+            Regex regex = new Regex(@"^[0-9]*[.][0-9]+|[0-9]+[.][0-9]*");//Float
+            Match match = regex.Match(numero);
+            if (match.Success) {
+                if (match.Value == numero)
+                    return "Float";
+                else
+                    return "ERRO";
+            }
+            else {
+                regex = new Regex(@"^[1-9][0-9]*"); //Decimal
+                match = regex.Match(numero);
+                if (match.Success)
+                    return "Decimal";
+                else {
+                    regex = new Regex(@"^0x[0-9A-Fa-f]+");//Hexadecimal
+                    match = regex.Match(numero);
+                    if (match.Success)
+                        return "Hexadecimal";
+                    else {
+                        regex = new Regex(@"^0[0-7]*"); //Octal
+                        match = regex.Match(numero);
+                        if (match.Success)
+                            return "Octal";
+                    }
+
+                }
+            }
+
+            return "ERRO";
         }
     }
 }
