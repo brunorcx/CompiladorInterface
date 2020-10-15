@@ -252,13 +252,21 @@ namespace CompiladorInterface {
                     if (linha[i] == ' ' || i == linha.Length - 1 || linha[i] == ';') {//Pegar Lexema
                         if (i == linha.Length - 1 && linha[i] != ' ' && linha[i] != ';')//Corrigir \n que não é lido
                             lexema = lexema + ' ';
-                        if (ReconhecerIdentificador(lexema)) {//CASO IDENTIFICADOR
+
+                        if (ReconhecerPalavrasOperadores(lexema.Substring(0, lexema.Length - 1)) != "ERRO") {//CASO palavras reservadas e operadores
+                            workRow = tabela.NewRow();
+                            workRow["Lexema"] = lexema.Substring(0, lexema.Length - 1);
+                            workRow["Rótulo"] = ReconhecerPalavrasOperadores(lexema.Substring(0, lexema.Length - 1));
+                            workRow["COD"] = cont++;
+                            tabela.Rows.Add(workRow);
+                        }
+                        else if (ReconhecerIdentificador(lexema)) {//CASO IDENTIFICADOR
                             workRow = tabela.NewRow();
                             workRow["Lexema"] = lexema.Substring(0, lexema.Length - 1);
                             workRow["Rótulo"] = "ID";
                             workRow["COD"] = cont++;
                             tabela.Rows.Add(workRow);
-                        }//FIM CASO IDENTIFICADOR
+                        }
                         else if (ReconhecerNumero(lexema) != "ERRO") { //CASO INT E FLOAT verificar 0.5f
                             workRow = tabela.NewRow();
                             workRow["Lexema"] = lexema.Substring(0, lexema.Length - 1);
@@ -266,6 +274,63 @@ namespace CompiladorInterface {
                             workRow["COD"] = cont++;
                             tabela.Rows.Add(workRow);
                         }
+                        else if (ReconhecerFuncao(lexema)) {
+                            string tempString = String.Empty;
+                            for (int l = 0; l < lexema.Length - 1; l++) {
+                                tempString = tempString + lexema[l];
+                                if (lexema[l] == '(') {
+                                    //Adicionar identificador função
+                                    workRow = tabela.NewRow();
+                                    workRow["Lexema"] = tempString.Substring(0, tempString.Length - 1);
+                                    workRow["Rótulo"] = "IDFUNC";
+                                    workRow["COD"] = cont++;
+                                    tabela.Rows.Add(workRow);
+                                    //Adicionar parentesis aberto
+                                    workRow = tabela.NewRow();
+                                    workRow["Lexema"] = "(";
+                                    workRow["Rótulo"] = "(";
+                                    workRow["COD"] = cont++;
+                                    tabela.Rows.Add(workRow);
+
+                                    tempString = String.Empty;
+                                }
+                                else if (lexema[l] == ')') {
+                                    if (tempString != ")") {
+                                        //Adicionar identificador parâmentro
+                                        workRow = tabela.NewRow();
+                                        workRow["Lexema"] = tempString.Substring(0, tempString.Length - 1);
+                                        workRow["Rótulo"] = "IDPAR";
+                                        workRow["COD"] = cont++;
+                                        tabela.Rows.Add(workRow);
+                                    }
+
+                                    //Adicionar parentesis fechado
+                                    workRow = tabela.NewRow();
+                                    workRow["Lexema"] = ")";
+                                    workRow["Rótulo"] = ")";
+                                    workRow["COD"] = cont++;
+                                    tabela.Rows.Add(workRow);
+                                }
+                            }
+
+                        }
+                        else if (lexema != " " && lexema != "\n") { //Lexema não reconhecido
+                            workRow = tabela.NewRow();
+                            workRow["Lexema"] = lexema.Substring(0, lexema.Length - 1);
+                            workRow["Rótulo"] = "ERRO";
+                            workRow["COD"] = cont++;
+                            tabela.Rows.Add(workRow);
+                        }
+
+                        //Adicionar ; na tabela Não entra como else if é separado dos outros casos
+                        if (lexema[lexema.Length - 1] == ';') {
+                            workRow = tabela.NewRow();
+                            workRow["Lexema"] = ";";
+                            workRow["Rótulo"] = "$";
+                            workRow["COD"] = cont++;
+                            tabela.Rows.Add(workRow);
+                        }
+
                         lexema = String.Empty;
 
                     }
@@ -442,8 +507,6 @@ namespace CompiladorInterface {
 
         public bool ReconhecerIdentificador(string token) {//Identificador deve iniciar com letra ou _
             //1º Linguagem
-            carregarOperadores();
-            carregarCaracteresEspeciais();
             //2 é o estado de aceitação e 3 o de ERRO
             int[,] m = new int[4, 4] {
               //q0, q1, q2, q3
@@ -489,9 +552,7 @@ namespace CompiladorInterface {
         }
 
         public string ReconhecerNumero(string token) {//Identificador deve iniciar com letra ou _
-            //1º Linguagem
-            carregarOperadores();
-            carregarCaracteresEspeciais();
+            //2º Linguagem
             //2 é o estado de aceitação e 3 o de ERRO
             int[,] m = new int[4, 7] {
               //q0  q1  q2  q3  q4  q5  q6
@@ -539,6 +600,76 @@ namespace CompiladorInterface {
                 return "FLOAT";
             else
                 return "ERRO";
+        }
+
+        public string ReconhecerPalavrasOperadores(string lexema) {
+            foreach (string palavra in pReservadas) {
+                if (lexema == palavra)
+                    return "PR";//Palavra Reservada
+            }
+            foreach (string palavra in operadores) {
+                if (lexema == palavra)
+                    return palavra;//retornar o operador
+            }
+            foreach (string palavra in cEspeciais) {
+                if (lexema == palavra)
+                    return palavra;//retornar o operador
+            }
+
+            return "ERRO";
+        }
+
+        public bool ReconhecerFuncao(string token) {
+            //3º Linguagem
+            //4 é o estado de aceitação e 5 o ERRO
+            int[,] m = new int[6, 7] {
+              //q0  q1  q2  q3  q4  q5  q6
+                {1, 1,  6,  5,  4,  5,  6},     /*  Char Linha 0  */
+                {5, 1,  5,  5,  4,  5,  6},     /*  Num Linha 1 */
+                {5, 5,  5,  4,  4,  5,  5},     /*  ; " " "\n" Linha  2 */
+                {5, 2,  5,  5,  4,  5,  5},     /*  ( Linha 3 */
+                {5, 5,  3,  5,  4,  5,  3},     /*  ) Linha 4*/
+                {5, 5,  5,  5,  4,  5,  5}      /* outro Linha 5*/
+            };
+            //Estado inicial
+            int estado = 0;
+            int linha = 0;
+
+            foreach (var caracter in token) {
+                switch (IdentificarCaracter(caracter)) {
+                    case "Char":
+                        linha = 0;
+                        break;
+
+                    case "Numero":
+                        linha = 1;
+                        break;
+
+                    case "Fim":
+                        linha = 2;
+                        break;
+
+                    case "Simbolo":
+                        if (caracter == '(')
+                            linha = 3;
+                        else if (caracter == ')')
+                            linha = 4;
+                        else
+                            linha = 5;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                estado = m[linha, estado];
+
+            }
+
+            if (estado == 4)
+                return true;
+            else
+                return false;
         }
 
     }
