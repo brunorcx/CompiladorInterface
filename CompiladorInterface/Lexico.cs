@@ -521,6 +521,10 @@ namespace CompiladorInterface {
                         linha = 2;
                         break;
 
+                    case "Char":
+                        linha = 3;
+                        break;
+
                     default:
                         break;
                 }
