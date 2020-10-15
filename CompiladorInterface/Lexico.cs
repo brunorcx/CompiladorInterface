@@ -357,8 +357,6 @@ namespace CompiladorInterface {
         }
 
         public string IdentificarNumeros(string numero) { // Mudar para private depois
-            //Colocar parâmentro string numero e fazer por números, já tenho as palavras separadas
-
             //^ é usado para dar match forçando o inicio da palavra
             // return match.Value + " Float"; para verificar o valor que deu match
 
@@ -393,5 +391,70 @@ namespace CompiladorInterface {
 
             return "ERRO";
         }
+
+        public string IdentificarCaracter(char c) {
+            if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95) {
+                return "Char";
+            }
+            if (IdentificarNumeros(c.ToString()) != "ERRO")
+                return "Numero";
+            if (c == ';' || c == ' ' || c == '\n')
+                return "Fim";
+            if (acharSimbolos(c) || c == '.')
+                return "Simbolo";
+
+            return "ERRO";
+
+        }
+
+        public bool ReconhecerIdentificador(string token) {//Identificador deve iniciar com letra ou _
+            //1º Linguagem
+            carregarOperadores();
+            carregarCaracteresEspeciais();
+            //2 é o estado de aceitação e 3 o de ERRO
+            int[,] m = new int[4, 3] {
+              //q0, q1, q2
+                {1, 1, 2} ,   /*  Char Linha 0  */
+                {3, 1, 2} ,   /*  Num Linha 1 */
+                {3, 2, 2},   /*  ; " " "\n" Linha  2 */
+                {3, 3 , 2 }   /*  cEspeciais ou operadores Linha 3 */
+            };
+            //Estado inicial
+            int estado = 0;
+            int linha = 0;
+
+            foreach (var caracter in token) {
+                switch (IdentificarCaracter(caracter)) {
+                    case "Char":
+                        linha = 0;
+                        break;
+
+                    case "Numero":
+                        linha = 1;
+                        break;
+
+                    case "Fim":
+                        linha = 2;
+                        break;
+
+                    case "Simbolo":
+                        linha = 3;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                estado = m[linha, estado];
+
+            }
+
+            if (estado == 2)
+                return true;
+            else
+                return false;
+        }
     }
 }
+
+// REGEX https://www.geeksforgeeks.org/what-is-regular-expression-in-c-sharp/#:~:text=In%20C%23%2C%20Regular%20Expression%20is,that%20allows%20the%20pattern%20matching.
