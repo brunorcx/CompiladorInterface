@@ -102,6 +102,7 @@ namespace CompiladorInterface {
         private string c_doubleQuotationMark = "\"";   // "
         private string c_underscore = "_";             // _
         private string c_hash = "#";                   // #
+        private string c_dollarSign = "$";             //$
 
         //identificadores #########################
 
@@ -192,6 +193,7 @@ namespace CompiladorInterface {
             cEspeciais.Add(c_rightBracket);
             //cEspeciais.Add(c_semiColon);
             cEspeciais.Add(c_underscore);
+            cEspeciais.Add(c_dollarSign);
 
         }
 
@@ -242,6 +244,36 @@ namespace CompiladorInterface {
 
             //Adicionar nova linha
 
+            //COMECEI AQUI ####################
+            foreach (var linha in listaLinhas) {
+                string lexema = String.Empty;
+                for (int i = 0; i < linha.Length; i++) {
+                    lexema = lexema + linha[i];
+                    if (linha[i] == ' ' || i == linha.Length - 1 || linha[i] == ';') {//Pegar Lexema
+                        if (i == linha.Length - 1 && linha[i] != ' ' && linha[i] != ';')//Corrigir \n que não é lido
+                            lexema = lexema + ' ';
+                        if (ReconhecerIdentificador(lexema)) {//CASO IDENTIFICADOR
+                            workRow = tabela.NewRow();
+                            workRow["Lexema"] = lexema.Substring(0, lexema.Length - 1);
+                            workRow["Rótulo"] = "ID";
+                            workRow["COD"] = cont++;
+                            tabela.Rows.Add(workRow);
+                        }//FIM CASO IDENTIFICADOR
+                        else if (ReconhecerNumero(lexema) != "ERRO") { //CASO INT E FLOAT verificar 0.5f
+                            workRow = tabela.NewRow();
+                            workRow["Lexema"] = lexema.Substring(0, lexema.Length - 1);
+                            workRow["Rótulo"] = ReconhecerNumero(lexema);
+                            workRow["COD"] = cont++;
+                            tabela.Rows.Add(workRow);
+                        }
+                        lexema = String.Empty;
+
+                    }
+                }
+            }
+            //ATÉ AQUI #######################
+
+            /*
             foreach (string linha in listaLinhas) {
                 for (int i = 0, tamanho = 0; i < linha.Length;) {
                     if (linha[i] == ' ')
@@ -294,6 +326,7 @@ namespace CompiladorInterface {
                 }
 
             }
+            */
             DataRow[] rows = tabela.Select();
             Console.Write("\tLexema");
             Console.Write("\tRótulo");
@@ -412,12 +445,12 @@ namespace CompiladorInterface {
             carregarOperadores();
             carregarCaracteresEspeciais();
             //2 é o estado de aceitação e 3 o de ERRO
-            int[,] m = new int[4, 3] {
-              //q0, q1, q2
-                {1, 1, 2} ,   /*  Char Linha 0  */
-                {3, 1, 2} ,   /*  Num Linha 1 */
-                {3, 2, 2},   /*  ; " " "\n" Linha  2 */
-                {3, 3 , 2 }   /*  cEspeciais ou operadores Linha 3 */
+            int[,] m = new int[4, 4] {
+              //q0, q1, q2, q3
+                {1, 1, 2, 3} ,   /*  Char Linha 0  */
+                {3, 1, 2, 3} ,   /*  Num Linha 1 */
+                {3, 2, 2, 3},   /*  ; " " "\n" Linha  2 */
+                {3, 3 , 2, 3}   /*  cEspeciais ou operadores Linha 3 */
             };
             //Estado inicial
             int estado = 0;
@@ -454,6 +487,56 @@ namespace CompiladorInterface {
             else
                 return false;
         }
+
+        public string ReconhecerNumero(string token) {//Identificador deve iniciar com letra ou _
+            //1º Linguagem
+            carregarOperadores();
+            carregarCaracteresEspeciais();
+            //2 é o estado de aceitação e 3 o de ERRO
+            int[,] m = new int[4, 7] {
+              //q0  q1  q2  q3  q4  q5  q6
+                {2, 2,  6,  6,  4,  5,  6} ,    /*  . Linha 0  */
+                {1, 1,  3,  3,  4,  5,  6} ,    /*  Num Linha 1 */
+                {6, 5,  6,  4,  4,  5,  6},     /*  ; " " "\n" Linha  2 */
+                {6, 6 , 6,  6,  4,  5,  6}      /*  cEspeciais ou operadores Linha 3 */
+            };
+            //Estado inicial
+            int estado = 0;
+            int linha = 0;
+
+            foreach (var caracter in token) {
+                switch (IdentificarCaracter(caracter)) {
+                    case "Simbolo":
+                        if (caracter == '.')
+                            linha = 0;
+                        else
+                            linha = 3;
+                        break;
+
+                    case "Numero":
+                        linha = 1;
+                        break;
+
+                    case "Fim":
+                        linha = 2;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                estado = m[linha, estado];
+
+            }
+
+            if (estado == 5)
+                return "INT";
+            else if (estado == 4)
+                return "FLOAT";
+            else
+                return "ERRO";
+        }
+
     }
 }
 
