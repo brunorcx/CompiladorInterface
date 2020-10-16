@@ -276,7 +276,7 @@ namespace CompiladorInterface {
                             workRow["COD"] = cont++;
                             tabela.Rows.Add(workRow);
                         }
-                        else if (ReconhecerFuncao(lexema)) {
+                        else if (ReconhecerFuncao(lexema)) { // CASO FUNÇÃO
                             string tempString = String.Empty;
                             for (int l = 0; l < lexema.Length - 1; l++) {
                                 tempString = tempString + lexema[l];
@@ -316,7 +316,7 @@ namespace CompiladorInterface {
                             }
 
                         }
-                        else if (ReconhecerConstanteString(lexema)) {
+                        else if (ReconhecerConstanteString(lexema)) { //CASO STRING, contém bug em "   fff  \n
                             workRow = tabela.NewRow();
                             workRow["Lexema"] = lexema.Substring(0, lexema.Length - 1);
                             workRow["Rótulo"] = "ConstString";
@@ -730,3 +730,4 @@ namespace CompiladorInterface {
 }
 
 // REGEX https://www.geeksforgeeks.org/what-is-regular-expression-in-c-sharp/#:~:text=In%20C%23%2C%20Regular%20Expression%20is,that%20allows%20the%20pattern%20matching.
+// exemplos linguagens https://johnidm.gitbooks.io/compiladores-para-humanos/content/part1/lexical-analysis.html

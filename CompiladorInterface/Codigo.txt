@@ -1,15 +1,22 @@
 ﻿int a;
-float b;
+ float b;
 a =      10;
+
+func();
+FunçãoComPar(Parâmentro);
+FuncErrada(d;
 
   a = a + 1; 
      
 (a) = a - 2                                        ;
 
-a = a / 345;                              
+variavel2 = _Delimitador / 345;                              
 
-b = [a + 5] *70.5;
-
+b = var * 70.5;
+float real = 25.66;
+"Mario"
+"Mario"ç
+"StringErrada ComEspaço"
 
 
 
