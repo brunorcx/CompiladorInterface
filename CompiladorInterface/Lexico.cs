@@ -247,8 +247,10 @@ namespace CompiladorInterface {
             //COMECEI AQUI ####################
             foreach (var linha in listaLinhas) {
                 string lexema = String.Empty;
+                string constString = String.Empty;
                 for (int i = 0; i < linha.Length; i++) {
                     lexema = lexema + linha[i];
+
                     if (linha[i] == ' ' || i == linha.Length - 1 || linha[i] == ';') {//Pegar Lexema
                         if (i == linha.Length - 1 && linha[i] != ' ' && linha[i] != ';')//Corrigir \n que não é lido
                             lexema = lexema + ' ';
@@ -313,6 +315,13 @@ namespace CompiladorInterface {
                                 }
                             }
 
+                        }
+                        else if (ReconhecerConstanteString(lexema)) {
+                            workRow = tabela.NewRow();
+                            workRow["Lexema"] = lexema.Substring(0, lexema.Length - 1);
+                            workRow["Rótulo"] = "ConstString";
+                            workRow["COD"] = cont++;
+                            tabela.Rows.Add(workRow);
                         }
                         else if (lexema != " " && lexema != "\n") { //Lexema não reconhecido
                             workRow = tabela.NewRow();
@@ -670,6 +679,51 @@ namespace CompiladorInterface {
                 return true;
             else
                 return false;
+        }
+
+        public bool ReconhecerConstanteString(string token) {
+            //4º linguagem
+            //4 é o estado de aceitação e 3 o de ERRO
+            int[,] m = new int[3, 5] {
+              //q0, q1, q2, q3
+                {3, 1, 3, 3, 4},   /*  Char Linha 0  */
+                {1, 2, 3, 3, 4},   /*  Num Linha 1 */
+                {3, 1, 4, 3, 4},   /*  ; " " "\n" Linha  2 */
+            };
+            //Estado inicial
+            int estado = 0;
+            int linha = 0;
+
+            foreach (var caracter in token) {
+                switch (IdentificarCaracter(caracter)) {
+                    case "Char":
+                        linha = 0;
+                        break;
+
+                    case "Simbolo":
+                        if (caracter == '"')
+                            linha = 1;
+                        else
+                            linha = 0;
+                        break;
+
+                    case "Fim":
+                        linha = 2;
+                        break;
+
+                    default:
+                        break;
+                }
+
+                estado = m[linha, estado];
+
+            }
+
+            if (estado == 4)
+                return true;
+            else
+                return false;
+
         }
 
     }
