@@ -32,6 +32,8 @@
             this.dataGridTabelaLex = new System.Windows.Forms.DataGridView();
             this.buttonArvore = new System.Windows.Forms.Button();
             this.treeView1 = new System.Windows.Forms.TreeView();
+            this.buttonAntArvore = new System.Windows.Forms.Button();
+            this.buttonProxArvore = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridTabelaLex)).BeginInit();
             this.SuspendLayout();
             // 
@@ -118,11 +120,35 @@
             this.treeView1.Size = new System.Drawing.Size(350, 338);
             this.treeView1.TabIndex = 5;
             // 
+            // buttonAntArvore
+            // 
+            this.buttonAntArvore.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonAntArvore.Location = new System.Drawing.Point(560, 62);
+            this.buttonAntArvore.Name = "buttonAntArvore";
+            this.buttonAntArvore.Size = new System.Drawing.Size(73, 32);
+            this.buttonAntArvore.TabIndex = 6;
+            this.buttonAntArvore.Text = "Anterior";
+            this.buttonAntArvore.UseVisualStyleBackColor = true;
+            this.buttonAntArvore.Click += new System.EventHandler(this.buttonAntArvore_Click);
+            // 
+            // buttonProxArvore
+            // 
+            this.buttonProxArvore.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonProxArvore.Location = new System.Drawing.Point(639, 62);
+            this.buttonProxArvore.Name = "buttonProxArvore";
+            this.buttonProxArvore.Size = new System.Drawing.Size(73, 32);
+            this.buttonProxArvore.TabIndex = 7;
+            this.buttonProxArvore.Text = "Próxima";
+            this.buttonProxArvore.UseVisualStyleBackColor = true;
+            this.buttonProxArvore.Click += new System.EventHandler(this.buttonProxArvore_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonProxArvore);
+            this.Controls.Add(this.buttonAntArvore);
             this.Controls.Add(this.treeView1);
             this.Controls.Add(this.buttonArvore);
             this.Controls.Add(this.dataGridTabelaLex);
@@ -142,6 +168,8 @@
         private System.Windows.Forms.DataGridView dataGridTabelaLex;
         private System.Windows.Forms.Button buttonArvore;
         private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.Button buttonAntArvore;
+        private System.Windows.Forms.Button buttonProxArvore;
     }
 }
 

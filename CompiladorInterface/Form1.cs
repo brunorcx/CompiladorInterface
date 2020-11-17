@@ -75,15 +75,23 @@ namespace CompiladorInterface {
                 listaNos.Add(new TreeNode("F"));
                 listaNos.Add(new TreeNode("D"));
                 listaNos.Add(new TreeNode("&"));
-
                 TreeNode raiz = new TreeNode("E", new TreeNode[] { listaNos[1], listaNos[2] });
                 listaNos[1].Nodes.Add(listaNos[3]);
                 */
+                treeView1.Nodes.Clear();
                 treeView1.Nodes.Add(listaNos[0]);
-
                 treeView1.ExpandAll();
+                //Limpar listas
+                sintaxe.listaNos.Clear();
             }
         }
+
+        private void buttonAntArvore_Click(object sender, EventArgs e) {
+        }
+
+        private void buttonProxArvore_Click(object sender, EventArgs e) {
+        }
+
     }
 }
 
