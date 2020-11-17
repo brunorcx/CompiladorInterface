@@ -13,6 +13,7 @@ using System.Windows.Forms;
 namespace CompiladorInterface {
 
     public partial class Form1 : Form {
+        private DataTable tabela;
 
         public Form1() {
             InitializeComponent();
@@ -25,7 +26,6 @@ namespace CompiladorInterface {
         }
 
         private void GerarTabela_Click(object sender, EventArgs e) {
-            DataTable tabela;
             //Código novo
             //sintaxe.AnalisadorPreditivo();
             //Finaliza aqui
@@ -35,12 +35,55 @@ namespace CompiladorInterface {
             listaLinhas = lexico.lerArquivo();
             tabela = lexico.separarLexemas(listaLinhas);
             dataGridTabelaLex.DataSource = tabela;
-            //Sintaxe
-            Sintaxe sintaxe = new Sintaxe(tabela);
-            var a = sintaxe.AnalisadorPreditivo();
 
         }
 
+        private void buttonArvore_Click(object sender, EventArgs e) {
+            //Sintaxe
+            Sintaxe sintaxe = new Sintaxe(tabela);
+            var arvore = sintaxe.AnalisadorPreditivo();
+
+            if (arvore == null) {
+                MessageBox.Show("Sentença não reconhecida, verifique a linha tal");
+            }
+            else {
+                //Cronstruir Árvore
+                List<TreeNode> listaNos = new List<TreeNode>();
+                TreeNode<string> noPre;
+                TreeNode noL = new TreeNode();
+                foreach (var no in sintaxe.listaNos) {
+                    listaNos.Add(new TreeNode(no.Value));
+                }
+
+                for (int i = 0; i < listaNos.Count; i++) {
+                    noPre = sintaxe.listaNos[i];
+                    noL = listaNos[i];
+
+                    foreach (var children in noPre.Children) {
+                        for (int j = i; j < listaNos.Count; j++) {
+                            if (children.Value == listaNos[j].Text && listaNos[j].Parent == null) {
+                                noL.Nodes.Add(listaNos[j]);
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
+                /*
+                listaNos.Add(new TreeNode("E"));
+                listaNos.Add(new TreeNode("F"));
+                listaNos.Add(new TreeNode("D"));
+                listaNos.Add(new TreeNode("&"));
+
+                TreeNode raiz = new TreeNode("E", new TreeNode[] { listaNos[1], listaNos[2] });
+                listaNos[1].Nodes.Add(listaNos[3]);
+                */
+                treeView1.Nodes.Add(listaNos[0]);
+
+                treeView1.ExpandAll();
+            }
+        }
     }
 }
 

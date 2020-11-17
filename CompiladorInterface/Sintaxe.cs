@@ -11,17 +11,15 @@ namespace CompiladorInterface {
 
     internal class Sintaxe {
         private DataTable tabela;
+        public List<TreeNode<string>> listaNos;
 
         public Sintaxe(DataTable table) {
             tabela = table;
         }
 
-        public bool AnalisadorPreditivo() {
+        public TreeNode<string> AnalisadorPreditivo() {
             //Inicia aqui
-            if (SomaMultiParen() == null)
-                return false;
-            else
-                return true;
+            return SomaMultiParen();
 
         }
 
@@ -45,7 +43,7 @@ namespace CompiladorInterface {
         }
 
         private TreeNode<string> SomaMultiParen() {
-            List<TreeNode<string>> listaNos = new List<TreeNode<string>>();
+            listaNos = new List<TreeNode<string>>();
             List<TreeNode<string>> listaTemp = new List<TreeNode<string>>();
             TreeNode<string> noArvore = new TreeNode<string>("E");//Raiz
             listaNos.Add(noArvore);
@@ -229,3 +227,5 @@ namespace CompiladorInterface {
 
     }
 }
+
+//TODO: Visualização da árvore e adicionar sintaxe para código inteiro
