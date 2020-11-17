@@ -52,6 +52,7 @@ namespace CompiladorInterface {
         public List<TreeNode> AnalisadorPreditivo() {
             string linhaLexica = String.Empty;
             listaArvoresProntas = new List<TreeNode>();
+            int linhaAtual = 0;
 
             foreach (System.Data.DataRow linha in tabela.Rows) {
                 //ID INT FLOAT mudar para v
@@ -62,10 +63,13 @@ namespace CompiladorInterface {
                     linhaLexica = linhaLexica + linha["Rótulo"];
 
                 if (linha["Lexema"].ToString() == ";") {
+                    linhaAtual++;
                     linhaLexica = linhaLexica.Replace(";", "$S");
                     var arvorePre = SomaMultiParen(linhaLexica);
-                    if (arvorePre == null)
+                    if (arvorePre == null) {
+                        MessageBox.Show("Sentença não reconhecida, verifique a linha " + linhaAtual.ToString());
                         return listaArvoresProntas;
+                    }
                     FormatarArvore();
                     linhaLexica = String.Empty;
                 }
