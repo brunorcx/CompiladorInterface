@@ -26,11 +26,18 @@ namespace CompiladorInterface {
 
         private void GerarTabela_Click(object sender, EventArgs e) {
             DataTable tabela;
+            //Código novo
+            //sintaxe.AnalisadorPreditivo();
+            //Finaliza aqui
             List<string> listaLinhas = new List<string>();
+            //Léxico
             Lexico lexico = new Lexico();
             listaLinhas = lexico.lerArquivo();
-
-            dataGridTabelaLex.DataSource = lexico.separarLexemas(listaLinhas);
+            tabela = lexico.separarLexemas(listaLinhas);
+            dataGridTabelaLex.DataSource = tabela;
+            //Sintaxe
+            Sintaxe sintaxe = new Sintaxe(tabela);
+            var a = sintaxe.AnalisadorPreditivo();
 
         }
 

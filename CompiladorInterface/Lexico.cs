@@ -246,13 +246,32 @@ namespace CompiladorInterface {
 
             //COMECEI AQUI ####################
             foreach (var linha in listaLinhas) {
+                string linhaModificada = linha;
+
                 string lexema = String.Empty;
                 string constString = String.Empty;
-                for (int i = 0; i < linha.Length; i++) {
-                    lexema = lexema + linha[i];
+                /*Tratar falta de espaços
+                foreach (var palavra in linha) {
+                    if (cEspeciais.Contains(palavra.ToString())) {
+                        int index = linhaModificada.IndexOf(palavra);
+                        try {
+                            if ((linhaModificada[index] == ')' && linhaModificada[index - 1] != '(') ||
+                           (linhaModificada[index] == '(' && linhaModificada[index + 1] != ')'))
+                                linhaModificada = linhaModificada.Replace(linhaModificada[index].ToString(), " " + linhaModificada[index] + " ");
+                        }
+                        catch (Exception) {
+                            linhaModificada = linhaModificada.Replace(linhaModificada[index].ToString(), " " + linhaModificada[index] + " ");
+                        }
 
-                    if (linha[i] == ' ' || i == linha.Length - 1 || linha[i] == ';') {//Pegar Lexema
-                        if (i == linha.Length - 1 && linha[i] != ' ' && linha[i] != ';')//Corrigir \n que não é lido
+                    }
+                }
+
+                Fim falta de espaços*/
+                for (int i = 0; i < linhaModificada.Length; i++) {
+                    lexema = lexema + linhaModificada[i];
+
+                    if (linhaModificada[i] == ' ' || i == linhaModificada.Length - 1 || linhaModificada[i] == ';') {//Pegar Lexema
+                        if (i == linhaModificada.Length - 1 && linhaModificada[i] != ' ' && linhaModificada[i] != ';')//Corrigir \n que não é lido
                             lexema = lexema + ' ';
 
                         if (ReconhecerPalavrasOperadores(lexema.Substring(0, lexema.Length - 1)) != "ERRO") {//CASO palavras reservadas e operadores

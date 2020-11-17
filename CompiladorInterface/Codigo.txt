@@ -1,4 +1,7 @@
-﻿int a;
+﻿a + 3 * iden2;
+( a ) = a - 2;
+
+int a;
  float b;
 a =      10;
 
