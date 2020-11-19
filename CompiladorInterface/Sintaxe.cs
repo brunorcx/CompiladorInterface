@@ -13,6 +13,7 @@ namespace CompiladorInterface {
         private DataTable tabela;
         public List<TreeNode<string>> listaNos;
         private List<TreeNode> listaArvoresProntas;
+        private List<TreeNode> listaArvoresFracas;
 
         public Sintaxe(DataTable table) {
             tabela = table;
@@ -270,6 +271,235 @@ namespace CompiladorInterface {
 
             return null;
 
+        }
+
+        public List<TreeNode> AnalisadorPrecedênciaFraca() {
+            string linhaLexica = String.Empty;
+            listaArvoresFracas = new List<TreeNode>();
+            int linhaAtual = 0;
+
+            foreach (System.Data.DataRow linha in tabela.Rows) {
+                //ID INT FLOAT mudar para v
+                if (linha["Rótulo"].ToString() == "ID" || linha["Rótulo"].ToString() == "INT"
+                    || linha["Rótulo"].ToString() == "FLOAT")
+                    linhaLexica = linhaLexica + "v";
+                else
+                    linhaLexica = linhaLexica + linha["Rótulo"];
+
+                if (linha["Lexema"].ToString() == ";") {
+                    linhaAtual++;
+                    linhaLexica = linhaLexica.Replace(";", "$S");
+                    var arvoreFraca = PrecedênciaSMParen(linhaLexica);
+                    if (arvoreFraca == null) {
+                        MessageBox.Show("Sentença não reconhecida, verifique a linha " + linhaAtual.ToString());
+                        return listaArvoresFracas;
+                    }
+                    else {
+                        listaArvoresFracas.Add(arvoreFraca);
+                    }
+                    linhaLexica = String.Empty;
+                }
+            }
+
+            return listaArvoresFracas;
+        }
+
+        private TreeNode PrecedênciaSMParen(string linhaLexica) {
+            TreeNode noArvore = null;
+            Stack pilha = new Stack();
+
+            string str = linhaLexica;//Essa string deve receber a sentença e colocar $ no final
+
+            /* Declarando a tabela sintática para o automato M */
+            int[,] M = new int[9, 6]{
+                        {1, 9, 9, 1, 9, 9},
+                        {2, 1, 9, 2, 9, 2},
+                        {2, 2, 9, 2, 9, 2},
+                        {9, 9, 1, 9, 1, 9},
+                        {9, 9, 1, 9, 1, 9},
+                        {9, 9, 1, 9, 1, 9},
+                        {2, 2, 9, 2, 9, 2},
+                        {2, 2, 9, 2, 9, 2},
+                        {9, 9, 1, 9, 1, 9}
+                    };
+
+            /*Declarando matriz de produções*/
+            string[,] producoes = new string[6, 2] {
+                {"E", "M+E" },
+                {"E", "M" },
+                {"M", "P*M" },
+                {"M", "P" },
+                {"P", ")E(" },
+                {"P", "v" }
+            };
+
+            /* Colocando o simbolo delimitador na pilha*/
+            pilha.Push('$');
+
+            /* Receberá a indexação referente ao matriz*/
+            int c;
+            int l;
+            int i;
+            /* Receberá as produções*/
+            string prod;
+            /* Percorrendo toda a sentenca de avaliacao*/
+            for (i = 0; str.Length != i; i++) {
+                switch (str[i]) {
+                    case '+':
+                        c = 0;
+                        break;
+
+                    case '*':
+                        c = 1;
+                        break;
+
+                    case '(':
+                        c = 2;
+                        break;
+
+                    case ')':
+                        c = 3;
+                        break;
+
+                    case 'v':
+                        c = 4;
+                        break;
+
+                    case '$':
+                        c = 5;
+                        break;
+
+                    default:
+                        return null;
+                }
+                while (true) {
+                    switch (pilha.Peek()) {
+                        case 'E':
+                            l = 0;
+                            break;
+
+                        case 'M':
+                            l = 1;
+                            break;
+
+                        case 'P':
+                            l = 2;
+                            break;
+
+                        case '+':
+                            l = 3;
+                            break;
+
+                        case '*':
+                            l = 4;
+                            break;
+
+                        case '(':
+                            l = 5;
+                            break;
+
+                        case ')':
+                            l = 6;
+                            break;
+
+                        case 'v':
+                            l = 7;
+                            break;
+
+                        case '$':
+                            l = 8;
+                            break;
+
+                        default:
+                            return null;
+                    }
+
+                    /* Escolhendo a produção a ser aplicada pela tabela sintática */
+                    int nProd = M[l, c];
+                    /* Tratando os dois casos Redução-Deslocamento*/
+                    switch (nProd) {
+                        case 1: //Deslocamento
+                            prod = "Deslocamento";
+                            break;
+
+                        case 2: //Redução
+                            Stack pilhaTemp = new Stack();
+                            pilhaTemp = (Stack)pilha.Clone();
+                            List<string> listaProd = new List<string>();
+                            var topo = pilhaTemp.Pop().ToString();
+                            for (int j = 0; j < 6; j++) {
+                                if (producoes[j, 1].Contains(topo)) {
+                                    listaProd.Add(producoes[j, 1]);
+                                }
+                            }
+                            if (listaProd.Count == 1) {
+                                prod = listaProd[0];
+                            }
+                            else {
+                                int maior = 0;
+                                prod = topo;
+                                List<string> listaPilha = new List<string>();
+                                while (pilhaTemp.Count > 0) {
+                                    listaPilha.Add(pilhaTemp.Pop().ToString());
+                                }
+
+                                foreach (var produ in listaProd) {
+                                    int o = 1;
+                                    for (o = 1; o < produ.Length; o++) {
+                                        if (produ[o].ToString() == listaPilha[o - 1]) {
+                                        }
+                                        else {
+                                            break;
+                                        }
+
+                                    }
+                                    if (o == produ.Length) {
+                                        if (maior < o) {
+                                            maior = o;
+                                            prod = produ;
+                                        }
+                                    }
+                                }
+
+                            }
+                            break;
+
+                        default:
+                            return null;
+                    }
+                    /*Empilha char da lista de tokens */
+                    if (prod == "Deslocamento") {
+                        pilha.Push(str[i]);
+                        noArvore = new TreeNode(str[i].ToString());
+                    }
+                    /* Aplicar produção de redução */
+                    else {
+                        foreach (var caracter in prod) {
+                            pilha.Pop();
+                        }
+
+                        for (int j = 0; j < 6; j++) {
+                            if (producoes[j, 1] == prod) {
+                                pilha.Push(producoes[j, 0][0]);
+                                break;
+                            }
+                        }
+                    }
+                    /* Verificando se há igualdade no topo da pilha e o caractere em analise*/
+                    if (pilha.Peek().ToString()[0] == 'E') {
+                        /*Reconhecimento da sentença*/
+                        if (str[i] == '$') {
+                            return noArvore;
+                        }
+
+                    }
+                    else if (prod == "Deslocamento")
+                        break;
+                }
+
+            }
+
+            return noArvore;
         }
 
     }

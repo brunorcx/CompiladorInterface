@@ -16,6 +16,7 @@ namespace CompiladorInterface {
         private DataTable tabela;
         private int numArvore;
         private List<TreeNode> arvores;
+        private List<TreeNode> arvoresFracas;
 
         public Form1() {
             InitializeComponent();
@@ -67,6 +68,13 @@ namespace CompiladorInterface {
             }
         }
 
+        private void buttonArvorePrecFraca_Click(object sender, EventArgs e) {
+            Sintaxe sintaxe = new Sintaxe(tabela);
+            arvoresFracas = sintaxe.AnalisadorPrecedênciaFraca();
+            treeView1.Nodes.Clear();
+            treeView1.Nodes.Add(arvoresFracas[0]);
+            treeView1.ExpandAll();
+        }
     }
 }
 
