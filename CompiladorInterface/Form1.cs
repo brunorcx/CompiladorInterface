@@ -15,6 +15,7 @@ namespace CompiladorInterface {
     public partial class Form1 : Form {
         private DataTable tabela;
         private int numArvore;
+        private int numArvoreFracas;
         private List<TreeNode> arvores;
         private List<TreeNode> arvoresFracas;
 
@@ -51,20 +52,30 @@ namespace CompiladorInterface {
         }
 
         private void buttonAntArvore_Click(object sender, EventArgs e) {
-            if (numArvore > 0) {
-                numArvore--;
-                treeView1.Nodes.Clear();
-                treeView1.Nodes.Add(arvores[numArvore]);
-                treeView1.ExpandAll();
+            if (arvores == null) {
+                MessageBox.Show("Por favor gere a árvore primeiro");
+            }
+            else {
+                if (numArvore > 0) {
+                    numArvore--;
+                    treeView1.Nodes.Clear();
+                    treeView1.Nodes.Add(arvores[numArvore]);
+                    treeView1.ExpandAll();
+                }
             }
         }
 
         private void buttonProxArvore_Click(object sender, EventArgs e) {
-            if (numArvore < arvores.Count - 1) {
-                numArvore++;
-                treeView1.Nodes.Clear();
-                treeView1.Nodes.Add(arvores[numArvore]);
-                treeView1.ExpandAll();
+            if (arvores == null) {
+                MessageBox.Show("Por favor gere a árvore primeiro");
+            }
+            else {
+                if (numArvore < arvores.Count - 1) {
+                    numArvore++;
+                    treeView1.Nodes.Clear();
+                    treeView1.Nodes.Add(arvores[numArvore]);
+                    treeView1.ExpandAll();
+                }
             }
         }
 
@@ -74,6 +85,34 @@ namespace CompiladorInterface {
             treeView1.Nodes.Clear();
             treeView1.Nodes.Add(arvoresFracas[0]);
             treeView1.ExpandAll();
+        }
+
+        private void buttonAntFraca_Click(object sender, EventArgs e) {
+            if (arvoresFracas == null) {
+                MessageBox.Show("Por favor gere a árvore primeiro");
+            }
+            else {
+                if (numArvoreFracas > 0) {
+                    numArvoreFracas--;
+                    treeView1.Nodes.Clear();
+                    treeView1.Nodes.Add(arvoresFracas[numArvoreFracas]);
+                    treeView1.ExpandAll();
+                }
+            }
+        }
+
+        private void buttonProxFraca_Click(object sender, EventArgs e) {
+            if (arvoresFracas == null) {
+                MessageBox.Show("Por favor gere a árvore primeiro");
+            }
+            else {
+                if (numArvoreFracas < arvoresFracas.Count - 1) {
+                    numArvoreFracas++;
+                    treeView1.Nodes.Clear();
+                    treeView1.Nodes.Add(arvoresFracas[numArvoreFracas]);
+                    treeView1.ExpandAll();
+                }
+            }
         }
     }
 }

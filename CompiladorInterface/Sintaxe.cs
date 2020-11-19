@@ -307,6 +307,8 @@ namespace CompiladorInterface {
         private TreeNode PrecedênciaSMParen(string linhaLexica) {
             TreeNode noArvore = null;
             Stack pilha = new Stack();
+            Stack<TreeNode> pilhaNos = new Stack<TreeNode>();
+            List<TreeNode> listaFilhos = new List<TreeNode>();
 
             string str = linhaLexica;//Essa string deve receber a sentença e colocar $ no final
 
@@ -471,25 +473,33 @@ namespace CompiladorInterface {
                     if (prod == "Deslocamento") {
                         pilha.Push(str[i]);
                         noArvore = new TreeNode(str[i].ToString());
+                        pilhaNos.Push(noArvore);
                     }
                     /* Aplicar produção de redução */
                     else {
                         foreach (var caracter in prod) {
                             pilha.Pop();
+                            listaFilhos.Add(pilhaNos.Pop());
                         }
 
                         for (int j = 0; j < 6; j++) {
                             if (producoes[j, 1] == prod) {
                                 pilha.Push(producoes[j, 0][0]);
+                                pilhaNos.Push(new TreeNode(producoes[j, 0]));
                                 break;
                             }
                         }
+                        foreach (var filho in listaFilhos) {
+                            pilhaNos.Peek().Nodes.Add(filho);
+                        }
+                        listaFilhos.Clear();
+
                     }
                     /* Verificando se há igualdade no topo da pilha e o caractere em analise*/
                     if (pilha.Peek().ToString()[0] == 'E') {
                         /*Reconhecimento da sentença*/
                         if (str[i] == '$') {
-                            return noArvore;
+                            return pilhaNos.Peek();
                         }
 
                     }
