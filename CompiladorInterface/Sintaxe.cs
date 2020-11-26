@@ -51,6 +51,7 @@ namespace CompiladorInterface {
         }
 
         public List<TreeNode> AnalisadorPreditivo() {
+            List<string> listaRotulo = new List<string>();
             string linhaLexica = String.Empty;
             listaArvoresProntas = new List<TreeNode>();
             int linhaAtual = 0;
@@ -58,14 +59,42 @@ namespace CompiladorInterface {
             foreach (System.Data.DataRow linha in tabela.Rows) {
                 //ID INT FLOAT mudar para v
                 if (linha["Rótulo"].ToString() == "ID" || linha["Rótulo"].ToString() == "INT"
-                    || linha["Rótulo"].ToString() == "FLOAT")
+                    || linha["Rótulo"].ToString() == "FLOAT") {
                     linhaLexica = linhaLexica + "v";
-                else
+                    listaRotulo.Add(linha["Rótulo"].ToString());
+                }
+                else {
                     linhaLexica = linhaLexica + linha["Rótulo"];
-
+                    listaRotulo.Add(linha["Rótulo"].ToString());
+                }
                 if (linha["Lexema"].ToString() == ";") {
                     linhaAtual++;
                     linhaLexica = linhaLexica.Replace(";", "$S");
+
+                    for (int i = 0; i < listaRotulo.Count() - 1; i++) {
+                        if (listaRotulo[i] == "=") {
+                            if (listaRotulo[i - 1] == "ID") {
+                                try {
+                                    if (listaRotulo[i - 2] == "PR" && i - 2 == 0)
+                                        linhaLexica = linhaLexica.Substring(linhaLexica.IndexOf('=') + 1);
+                                    else {
+                                        MessageBox.Show("Sentença não reconhecida, verifique a sintaxe correta para atribuição na linha " + linhaAtual.ToString());
+                                        return listaArvoresProntas;
+                                    }
+                                }
+                                catch (Exception) {
+                                    linhaLexica = linhaLexica.Substring(linhaLexica.IndexOf('=') + 1);
+                                }
+
+                            }
+                            else {
+                                MessageBox.Show("Sentença não reconhecida, verifique a sintaxe correta para atribuição na linha " + linhaAtual.ToString());
+                                return listaArvoresProntas;
+                            }
+
+                        }
+                    }
+
                     var arvorePre = SomaMultiParen(linhaLexica);
                     if (arvorePre == null) {
                         MessageBox.Show("Sentença não reconhecida, verifique a linha " + linhaAtual.ToString());
@@ -73,6 +102,7 @@ namespace CompiladorInterface {
                     }
                     FormatarArvore();
                     linhaLexica = String.Empty;
+                    listaRotulo.Clear();
                 }
             }
 
@@ -274,6 +304,7 @@ namespace CompiladorInterface {
         }
 
         public List<TreeNode> AnalisadorPrecedênciaFraca() {
+            List<string> listaRotulo = new List<string>();
             string linhaLexica = String.Empty;
             listaArvoresFracas = new List<TreeNode>();
             int linhaAtual = 0;
@@ -281,14 +312,42 @@ namespace CompiladorInterface {
             foreach (System.Data.DataRow linha in tabela.Rows) {
                 //ID INT FLOAT mudar para v
                 if (linha["Rótulo"].ToString() == "ID" || linha["Rótulo"].ToString() == "INT"
-                    || linha["Rótulo"].ToString() == "FLOAT")
+                    || linha["Rótulo"].ToString() == "FLOAT") {
                     linhaLexica = linhaLexica + "v";
-                else
+                    listaRotulo.Add(linha["Rótulo"].ToString());
+                }
+                else {
                     linhaLexica = linhaLexica + linha["Rótulo"];
-
+                    listaRotulo.Add(linha["Rótulo"].ToString());
+                }
                 if (linha["Lexema"].ToString() == ";") {
                     linhaAtual++;
                     linhaLexica = linhaLexica.Replace(";", "$S");
+
+                    for (int i = 0; i < listaRotulo.Count() - 1; i++) {
+                        if (listaRotulo[i] == "=") {
+                            if (listaRotulo[i - 1] == "ID") {
+                                try {
+                                    if (listaRotulo[i - 2] == "PR" && i - 2 == 0)
+                                        linhaLexica = linhaLexica.Substring(linhaLexica.IndexOf('=') + 1);
+                                    else {
+                                        MessageBox.Show("Sentença não reconhecida, verifique a sintaxe correta para atribuição na linha " + linhaAtual.ToString());
+                                        return listaArvoresFracas;
+                                    }
+                                }
+                                catch (Exception) {
+                                    linhaLexica = linhaLexica.Substring(linhaLexica.IndexOf('=') + 1);
+                                }
+
+                            }
+                            else {
+                                MessageBox.Show("Sentença não reconhecida, verifique a sintaxe correta para atribuição na linha " + linhaAtual.ToString());
+                                return listaArvoresFracas;
+                            }
+
+                        }
+                    }
+
                     var arvoreFraca = PrecedênciaSMParen(linhaLexica);
                     if (arvoreFraca == null) {
                         MessageBox.Show("Sentença não reconhecida, verifique a linha " + linhaAtual.ToString());
@@ -298,6 +357,7 @@ namespace CompiladorInterface {
                         listaArvoresFracas.Add(arvoreFraca);
                     }
                     linhaLexica = String.Empty;
+                    listaRotulo.Clear();
                 }
             }
 
