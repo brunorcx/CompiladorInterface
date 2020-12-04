@@ -34,7 +34,6 @@ namespace CompiladorInterface {
 
         public DataTable PreencherTabela() {
             //TODO: verificar variáveis repetidas
-            //TODO: ERRO dentro da main
 
             int linhaTabela = 0;
             int linhaCodigo = 0;
@@ -76,6 +75,9 @@ namespace CompiladorInterface {
                 if (linha["Rótulo"].ToString() == "IDFUNC"
                     && tabelaLexica.Rows[linhaTabela + 3]["Rótulo"].ToString() == "{") {
                     numEscopo++;
+                }
+                else if (linha["Rótulo"].ToString() == "}") {
+                    numEscopo--;
                 }
 
                 novaLinha["Escopo"] = numEscopo;
