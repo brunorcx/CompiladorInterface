@@ -338,6 +338,7 @@ namespace CompiladorInterface {
                                         linhaLexica = linhaLexica.Substring(linhaLexica.IndexOf('=') + 1);
                                     }
                                     else {
+                                        listaArvoresFracas.RemoveAll(arvore => arvore == null);
                                         MessageBox.Show("Sentença não reconhecida, verifique a sintaxe correta para atribuição na linha " + linhaAtual.ToString());
                                         return listaArvoresFracas;
                                     }
@@ -349,6 +350,7 @@ namespace CompiladorInterface {
 
                             }
                             else {
+                                listaArvoresFracas.RemoveAll(arvore => arvore == null);
                                 MessageBox.Show("Sentença não reconhecida, verifique a sintaxe correta para atribuição na linha " + linhaAtual.ToString());
                                 return listaArvoresFracas;
                             }
@@ -358,6 +360,7 @@ namespace CompiladorInterface {
 
                     var arvoreFraca = PrecedênciaSMParen(linhaLexica, valores);
                     if (arvoreFraca == null && !linhaLexica.Contains("PRIDFUNC(){") && linhaLexica != "PRv$" && linhaLexica != "}") {//O && não adiciona
+                        listaArvoresFracas.RemoveAll(arvore => arvore == null);
                         MessageBox.Show("Sentença não reconhecida, verifique a linha " + linhaAtual.ToString());
                         return listaArvoresFracas;
                     }
@@ -369,7 +372,7 @@ namespace CompiladorInterface {
                     valores.Clear();
                 }
             }
-
+            listaArvoresFracas.RemoveAll(arvore => arvore == null);
             return listaArvoresFracas;
         }
 

@@ -33,6 +33,9 @@ namespace CompiladorInterface {
         }
 
         public DataTable PreencherTabela() {
+            //TODO: verificar variáveis repetidas
+            //TODO: ERRO dentro da main
+
             int linhaTabela = 0;
             int linhaCodigo = 0;
             int numEscopo = 0;
@@ -52,7 +55,7 @@ namespace CompiladorInterface {
                 }
                 else if (linha["Rótulo"].ToString() == "INT" || linha["Rótulo"].ToString() == "FLOAT") {
                     novaLinha["Rótulo"] = "NUM";
-                    novaLinha["Tipo"] = linha["Lexema"];
+                    novaLinha["Tipo"] = linha["Rótulo"];
                 }
                 else
                     novaLinha["Rótulo"] = linha["Rótulo"];
@@ -79,8 +82,17 @@ namespace CompiladorInterface {
 
                 tabelaSimbolos.Rows.Add(novaLinha);
                 linhaTabela++;
-                if (linha["Lexema"].ToString() == ";")
+                if (linha["Lexema"].ToString() == ";") {
                     linhaCodigo++;
+                    try {
+                        if (tabelaLexica.Rows[linhaTabela - 2]["Rótulo"].ToString() == "ID")
+                            if (tabelaLexica.Rows[linhaTabela - 3]["Rótulo"].ToString() == "PR")
+                                linhaCodigo--;
+                    }
+                    catch (Exception) {//out of bounds
+                    }
+
+                }
             }
 
             //Atribuir tipo
@@ -137,8 +149,6 @@ namespace CompiladorInterface {
                     else
                         operacao.Add(terminal);
 
-                    //TODO: verificar variáveis repetidas
-                    //TODO: Implementar escopo
                 }
             }
 
