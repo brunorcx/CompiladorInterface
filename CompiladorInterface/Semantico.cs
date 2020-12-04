@@ -35,6 +35,7 @@ namespace CompiladorInterface {
         public DataTable PreencherTabela() {
             int linhaTabela = 0;
             int linhaCodigo = 0;
+            int numEscopo = 0;
             DataTable tabelaSimbolos = CriarEsquemaTabelaSimbolos();
 
             //Carregar lexemas, rótulos e categorias
@@ -69,6 +70,12 @@ namespace CompiladorInterface {
                     tabelaSimbolos.Rows[linhaTabela - 1]["Valor"] = FazCalculo(tabelaSimbolos);
                     resultadoArvore.Clear();
                 }
+                if (linha["Rótulo"].ToString() == "IDFUNC"
+                    && tabelaLexica.Rows[linhaTabela + 3]["Rótulo"].ToString() == "{") {
+                    numEscopo++;
+                }
+
+                novaLinha["Escopo"] = numEscopo;
 
                 tabelaSimbolos.Rows.Add(novaLinha);
                 linhaTabela++;

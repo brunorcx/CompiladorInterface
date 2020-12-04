@@ -224,7 +224,7 @@
             dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridTabelaSimbolos.RowHeadersDefaultCellStyle = dataGridViewCellStyle8;
-            this.dataGridTabelaSimbolos.Size = new System.Drawing.Size(350, 338);
+            this.dataGridTabelaSimbolos.Size = new System.Drawing.Size(490, 338);
             this.dataGridTabelaSimbolos.TabIndex = 11;
             // 
             // buttonTabelaSimbolos
@@ -242,7 +242,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1184, 450);
+            this.ClientSize = new System.Drawing.Size(1284, 450);
             this.Controls.Add(this.buttonTabelaSimbolos);
             this.Controls.Add(this.dataGridTabelaSimbolos);
             this.Controls.Add(this.buttonProxFraca);

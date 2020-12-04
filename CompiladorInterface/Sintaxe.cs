@@ -324,9 +324,10 @@ namespace CompiladorInterface {
                     listaRotulo.Add(linha["Rótulo"].ToString());
                     valores.Add(linha["Lexema"].ToString());
                 }
-                if (linha["Lexema"].ToString() == ";") {
+
+                if (linha["Lexema"].ToString() == ";" || linha["Lexema"].ToString() == "{" || linha["Lexema"].ToString() == "}") {
                     linhaAtual++;
-                    linhaLexica = linhaLexica.Replace(";", "$S");
+                    linhaLexica = linhaLexica.Replace(";", "$");
 
                     for (int i = 0; i < listaRotulo.Count() - 1; i++) {
                         if (listaRotulo[i] == "=") {
@@ -356,7 +357,7 @@ namespace CompiladorInterface {
                     }
 
                     var arvoreFraca = PrecedênciaSMParen(linhaLexica, valores);
-                    if (arvoreFraca == null) {
+                    if (arvoreFraca == null && !linhaLexica.Contains("PRIDFUNC(){") && linhaLexica != "PRv$" && linhaLexica != "}") {//O && não adiciona
                         MessageBox.Show("Sentença não reconhecida, verifique a linha " + linhaAtual.ToString());
                         return listaArvoresFracas;
                     }
