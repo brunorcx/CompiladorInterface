@@ -305,6 +305,7 @@ namespace CompiladorInterface {
         }
 
         public List<TreeNode> AnalisadorPrecedênciaFraca() {
+            List<string> valores = new List<string>();
             List<string> listaRotulo = new List<string>();
             string linhaLexica = String.Empty;
             listaArvoresFracas = new List<TreeNode>();
@@ -316,10 +317,12 @@ namespace CompiladorInterface {
                     || linha["Rótulo"].ToString() == "FLOAT") {
                     linhaLexica = linhaLexica + "v";
                     listaRotulo.Add(linha["Rótulo"].ToString());
+                    valores.Add(linha["Lexema"].ToString());
                 }
                 else {
                     linhaLexica = linhaLexica + linha["Rótulo"];
                     listaRotulo.Add(linha["Rótulo"].ToString());
+                    valores.Add(linha["Lexema"].ToString());
                 }
                 if (linha["Lexema"].ToString() == ";") {
                     linhaAtual++;
@@ -329,14 +332,17 @@ namespace CompiladorInterface {
                         if (listaRotulo[i] == "=") {
                             if (listaRotulo[i - 1] == "ID") {
                                 try {
-                                    if (listaRotulo[i - 2] == "PR" && i - 2 == 0) //Mudar PR para INT/FLOAT/DOUBLE
+                                    if (listaRotulo[i - 2] == "PR" && i - 2 == 0) { //Mudar PR para INT/FLOAT/DOUBLE
+                                        valores.RemoveRange(0, linhaLexica.IndexOf('='));
                                         linhaLexica = linhaLexica.Substring(linhaLexica.IndexOf('=') + 1);
+                                    }
                                     else {
                                         MessageBox.Show("Sentença não reconhecida, verifique a sintaxe correta para atribuição na linha " + linhaAtual.ToString());
                                         return listaArvoresFracas;
                                     }
                                 }
                                 catch (Exception) {
+                                    valores.RemoveRange(0, linhaLexica.IndexOf('=') + 1);
                                     linhaLexica = linhaLexica.Substring(linhaLexica.IndexOf('=') + 1);
                                 }
 
@@ -349,7 +355,7 @@ namespace CompiladorInterface {
                         }
                     }
 
-                    var arvoreFraca = PrecedênciaSMParen(linhaLexica);
+                    var arvoreFraca = PrecedênciaSMParen(linhaLexica, valores);
                     if (arvoreFraca == null) {
                         MessageBox.Show("Sentença não reconhecida, verifique a linha " + linhaAtual.ToString());
                         return listaArvoresFracas;
@@ -359,13 +365,14 @@ namespace CompiladorInterface {
                     }
                     linhaLexica = String.Empty;
                     listaRotulo.Clear();
+                    valores.Clear();
                 }
             }
 
             return listaArvoresFracas;
         }
 
-        private TreeNode PrecedênciaSMParen(string linhaLexica) {
+        private TreeNode PrecedênciaSMParen(string linhaLexica, List<string> valores) {
             TreeNode noArvore = null;
             Stack pilha = new Stack();
             Stack<TreeNode> pilhaNos = new Stack<TreeNode>();
@@ -533,7 +540,9 @@ namespace CompiladorInterface {
                     /*Empilha char da lista de tokens */
                     if (prod == "Deslocamento") {
                         pilha.Push(str[i]);
-                        noArvore = new TreeNode(str[i].ToString());
+                        var novoPai = new TreeNode(str[i].ToString());
+                        novoPai.Name = valores[i];
+                        noArvore = novoPai;
                         pilhaNos.Push(noArvore);
                     }
                     /* Aplicar produção de redução */
@@ -546,7 +555,9 @@ namespace CompiladorInterface {
                         for (int j = 0; j < 6; j++) {
                             if (producoes[j, 1] == prod) {
                                 pilha.Push(producoes[j, 0][0]);
-                                pilhaNos.Push(new TreeNode(producoes[j, 0]));
+                                var novoNo = new TreeNode(producoes[j, 0]);
+                                novoNo.Name = valores[i];
+                                pilhaNos.Push(novoNo);
                                 break;
                             }
                         }

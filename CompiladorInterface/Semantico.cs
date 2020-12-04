@@ -11,7 +11,7 @@ namespace CompiladorInterface {
     internal class Semantico {
         private DataTable tabelaLexica;
         private List<TreeNode> arvores;
-        private List<string> resultado = new List<string>();
+        private List<string> resultadoArvore = new List<string>();
 
         public Semantico(DataTable tabela, List<TreeNode> listaArvore) {
             tabelaLexica = tabela;
@@ -34,7 +34,7 @@ namespace CompiladorInterface {
 
         public DataTable PreencherTabela() {
             int linhaTabela = 0;
-            int linhaCodigo = 2;
+            int linhaCodigo = 0;
             DataTable tabelaSimbolos = CriarEsquemaTabelaSimbolos();
 
             //Carregar lexemas, rótulos e categorias
@@ -58,8 +58,16 @@ namespace CompiladorInterface {
 
                 //Valor
                 if (linha["Lexema"].ToString() == "=") {
-                    ResultadoArvore(arvores[linhaCodigo]);
-                    tabelaLexica.Rows[linhaTabela - 1]["Valor"] = resultado;
+                    //ESSE TRY CATCH É TEMPORÁRIO QUEBRA QUANDO LINHA ULTRAPASSA NUM ARVORES
+                    try {
+                        ResultadoArvore(arvores[linhaCodigo]);
+
+                    }
+                    catch (Exception) {
+                        break;
+                    }
+                    tabelaSimbolos.Rows[linhaTabela - 1]["Valor"] = FazCalculo(tabelaSimbolos);
+                    resultadoArvore.Clear();
                 }
 
                 tabelaSimbolos.Rows.Add(novaLinha);
@@ -76,11 +84,69 @@ namespace CompiladorInterface {
         private void ResultadoArvore(TreeNode pai) { // Pegar árvore precedência fraca
             foreach (TreeNode filho in pai.Nodes) {
                 if (filho.Text == "v" || filho.Text == "*" || filho.Text == "+")
-                    resultado.Add(filho.Text);
+                    resultadoArvore.Add(filho.Name);
 
                 ResultadoArvore(filho);
             }
 
+        }
+
+        private string FazCalculo(DataTable tabela) {
+            double resultado;
+            if (resultadoArvore.Count == 1)
+                return resultadoArvore[0];
+
+            if (resultadoArvore[1] == "*")
+                resultado = 1;
+            else
+                resultado = 0;
+
+            List<double> valores = new List<double>();
+            List<string> operacao = new List<string>();
+            foreach (var terminal in resultadoArvore) {
+                try {
+                    valores.Add(Convert.ToDouble(terminal));
+                }
+                catch (Exception) {
+                    if (terminal != "*" && terminal != "+" && terminal != ";") {
+                        double valorTemporario = Double.NaN;
+
+                        foreach (DataRow linha in tabela.Rows) {
+                            if (linha["Lexema"].ToString() == terminal) {
+                                try {
+                                    valorTemporario = Convert.ToDouble(linha["Valor"].ToString());
+                                    valores.Add(valorTemporario);
+                                }
+                                catch (Exception) {
+                                    return "ERRO variável " + terminal + " não foi declarada";
+                                }
+                                break;
+                            }
+                        }
+                        if (Double.IsNaN(valorTemporario))
+                            return "ERRO variável " + terminal + " não foi declarada";
+
+                    }
+                    else
+                        operacao.Add(terminal);
+
+                    //TODO: verificar variáveis repetidas
+                    //TODO: Implementar escopo
+                }
+            }
+
+            for (int i = 0, j = 0; i < valores.Count; i++) {
+                if (operacao[j] == "*") {
+                    resultado = resultado * valores[i];
+                }
+                else if (operacao[j] == "+") {
+                    resultado = resultado + valores[i];
+                }
+                if (i % 2 != 0)
+                    j++;
+
+            }
+            return resultado.ToString();
         }
 
     }
