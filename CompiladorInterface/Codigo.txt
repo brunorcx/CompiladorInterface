@@ -1,7 +1,9 @@
 ﻿int a = 5;
 a = 3;
-a + 3 * iden2;
+b = a + 3 * iden2;
 ( a + 3 * x );
+c * 5 + 2 * 3;
+( 3 + 2 ) * f;
 ( a ) = a - 2;
 
 int a;
@@ -9,7 +11,7 @@ int a;
 a =      10;
 
 func();
-FunçãoComPar(Parâmentro);
+FunçãoComPar(Parâmetro);
 FuncErrada(d;
 
   a = a + 1; 

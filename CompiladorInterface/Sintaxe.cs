@@ -131,6 +131,7 @@ namespace CompiladorInterface {
         }
 
         private TreeNode<string> SomaMultiParen(string linhaLexica) {
+            List<TreeNode> arvoreValores = new List<TreeNode>();
             listaNos = new List<TreeNode<string>>();
             List<TreeNode<string>> listaTemp = new List<TreeNode<string>>();
             TreeNode<string> noArvore = new TreeNode<string>("E");//Raiz
@@ -275,7 +276,7 @@ namespace CompiladorInterface {
                         //BEM AQUI PRECISA DE FOREACH
                         foreach (var no in listaNos) {
                             if (no.Value == paiTemp && no.Children.Count == 0) {
-                                foreach (var filho in filhos.Reverse()) {
+                                foreach (var filho in filhos) {
                                     listaTemp.Add(no.AddChild(filho.ToString()));
                                 }
                                 break;
@@ -328,7 +329,7 @@ namespace CompiladorInterface {
                         if (listaRotulo[i] == "=") {
                             if (listaRotulo[i - 1] == "ID") {
                                 try {
-                                    if (listaRotulo[i - 2] == "PR" && i - 2 == 0)
+                                    if (listaRotulo[i - 2] == "PR" && i - 2 == 0) //Mudar PR para INT/FLOAT/DOUBLE
                                         linhaLexica = linhaLexica.Substring(linhaLexica.IndexOf('=') + 1);
                                     else {
                                         MessageBox.Show("Sentença não reconhecida, verifique a sintaxe correta para atribuição na linha " + linhaAtual.ToString());
@@ -574,5 +575,3 @@ namespace CompiladorInterface {
 
     }
 }
-
-//TODO: Visualização da árvore e adicionar sintaxe para código inteiro
