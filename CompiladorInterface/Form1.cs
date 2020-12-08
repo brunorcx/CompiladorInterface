@@ -118,7 +118,7 @@ namespace CompiladorInterface {
         private void buttonTabelaSimbolos_Click(object sender, EventArgs e) {
             DataTable tabelaSimbolos;
             Semantico semantico = new Semantico(tabela, arvoresFracas);
-            tabelaSimbolos = semantico.PreencherTabela();
+            tabelaSimbolos = semantico.FormatarTabela();
             dataGridTabelaSimbolos.DataSource = tabelaSimbolos;
         }
     }

@@ -27,14 +27,13 @@ namespace CompiladorInterface {
             tabelaSimbolos.Columns.Add("Tipo", typeof(String));
             tabelaSimbolos.Columns.Add("Valor", typeof(String));
             tabelaSimbolos.Columns.Add("Escopo", typeof(String));
-            tabelaSimbolos.Columns.Add("Utilizada", typeof(String));
+            tabelaSimbolos.Columns.Add("Declarada", typeof(String));
 
             return tabelaSimbolos;
         }
 
-        public DataTable PreencherTabela() {
+        private DataTable PreencherTabela() {
             //TODO: verificar variáveis repetidas
-
             int linhaTabela = 0;
             int linhaCodigo = 0;
             int numEscopo = 0;
@@ -47,9 +46,13 @@ namespace CompiladorInterface {
 
                 if (linha["Rótulo"].ToString() == "ID") { //variável
                     novaLinha["Categoria"] = "VAR";
-                    if (linhaTabela > 0 && (tabelaLexica.Rows[linhaTabela - 1]["Rótulo"].ToString() == "INT" || tabelaLexica.Rows[linhaTabela - 1]["Rótulo"].ToString() == "FLOAT")) {
-                        novaLinha["Tipo"] = tabelaLexica.Rows[linhaTabela - 1]["Rótulo"];
+                    if ((linhaTabela > 0) && (tabelaLexica.Rows[linhaTabela - 1]["Lexema"].ToString().ToUpper() == "INT"
+                        || tabelaLexica.Rows[linhaTabela - 1]["Lexema"].ToString().ToUpper() == "FLOAT")) {
+                        novaLinha["Tipo"] = tabelaLexica.Rows[linhaTabela - 1]["Lexema"].ToString().ToUpper();
+                        novaLinha["Declarada"] = "S";
                     }
+                    else
+                        novaLinha["Declarada"] = "N";
 
                 }
                 else if (linha["Rótulo"].ToString() == "INT" || linha["Rótulo"].ToString() == "FLOAT") {
@@ -59,19 +62,7 @@ namespace CompiladorInterface {
                 else
                     novaLinha["Rótulo"] = linha["Rótulo"];
 
-                //Valor
-                if (linha["Lexema"].ToString() == "=") {
-                    //ESSE TRY CATCH É TEMPORÁRIO QUEBRA QUANDO LINHA ULTRAPASSA NUM ARVORES
-                    try {
-                        ResultadoArvore(arvores[linhaCodigo]);
-
-                    }
-                    catch (Exception) {
-                        break;
-                    }
-                    tabelaSimbolos.Rows[linhaTabela - 1]["Valor"] = FazCalculo(tabelaSimbolos);
-                    resultadoArvore.Clear();
-                }
+                //Tratar Escopo
                 if (linha["Rótulo"].ToString() == "IDFUNC"
                     && tabelaLexica.Rows[linhaTabela + 3]["Rótulo"].ToString() == "{") {
                     numEscopo++;
@@ -81,6 +72,48 @@ namespace CompiladorInterface {
                 }
 
                 novaLinha["Escopo"] = numEscopo;
+
+                //Valor
+                if (linha["Lexema"].ToString() == "=") {
+                    string varTemp = tabelaLexica.Rows[linhaTabela - 1]["Lexema"].ToString();
+                    string calculo;
+                    DataRow linhaTemp;
+                    //ESSE TRY CATCH É TEMPORÁRIO QUEBRA QUANDO LINHA ULTRAPASSA NUM ARVORES
+                    try {
+                        ResultadoArvore(arvores[linhaCodigo]);
+                    }
+                    catch (Exception) {
+                        break;
+                    }
+                    calculo = FazCalculo(tabelaSimbolos, linhaTabela, numEscopo);
+                    tabelaSimbolos.Rows[linhaTabela - 1]["Valor"] = calculo;
+                    resultadoArvore.Clear();
+
+                    //Adicionar valor de acordo com o escopo
+                    List<DataRow> linhasVar = new List<DataRow>();
+                    for (int i = 0; i < linhaTabela; i++) {
+                        linhaTemp = tabelaSimbolos.Rows[i];
+                        if (varTemp == linhaTemp["Lexema"].ToString()) {
+                            if (linhaTemp["Declarada"].ToString() == "S") {
+                                if (numEscopo.ToString() == linhaTemp["Escopo"].ToString()) {
+                                    linhaTemp["Valor"] = calculo;
+                                    linhasVar.Clear();
+                                    break;
+                                }
+                                else
+                                    linhasVar.Insert(0, linhaTemp);
+                            }
+                        }
+                    }
+                    if (linhasVar.Count != 0) {
+                        for (int i = numEscopo - 1, j = 0; i >= 0; i--, j++) {
+                            if (linhasVar[j]["Escopo"].ToString() == i.ToString()) {
+                                linhasVar[j]["Valor"] = calculo;
+                                break;
+                            }
+                        }
+                    }
+                }
 
                 tabelaSimbolos.Rows.Add(novaLinha);
                 linhaTabela++;
@@ -112,7 +145,7 @@ namespace CompiladorInterface {
 
         }
 
-        private string FazCalculo(DataTable tabela) {
+        private string FazCalculo(DataTable tabela, int linhaTabela, int numEscopo) {
             double resultado;
             if (resultadoArvore.Count == 1)
                 return resultadoArvore[0];
@@ -131,7 +164,9 @@ namespace CompiladorInterface {
                 catch (Exception) {
                     if (terminal != "*" && terminal != "+" && terminal != ";") {
                         double valorTemporario = Double.NaN;
+                        // COMEÇA AQUI
 
+                        //TERMINA AQUI
                         foreach (DataRow linha in tabela.Rows) {
                             if (linha["Lexema"].ToString() == terminal) {
                                 try {
@@ -139,7 +174,10 @@ namespace CompiladorInterface {
                                     valores.Add(valorTemporario);
                                 }
                                 catch (Exception) {
-                                    return "ERRO variável " + terminal + " não foi declarada";
+                                    if (linha["Escopo"].ToString() != numEscopo.ToString())
+                                        continue;
+                                    else
+                                        return "ERRO variável " + terminal + " não foi declarada";
                                 }
                                 break;
                             }
@@ -166,6 +204,12 @@ namespace CompiladorInterface {
 
             }
             return resultado.ToString();
+        }
+
+        public DataTable FormatarTabela() {
+            DataTable tabelaSimbolos = PreencherTabela();
+
+            return tabelaSimbolos;
         }
 
     }
