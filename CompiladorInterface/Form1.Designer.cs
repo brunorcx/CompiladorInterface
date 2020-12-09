@@ -43,6 +43,8 @@
             this.buttonProxFraca = new System.Windows.Forms.Button();
             this.dataGridTabelaSimbolos = new System.Windows.Forms.DataGridView();
             this.buttonTabelaSimbolos = new System.Windows.Forms.Button();
+            this.labelErrosSemanticos = new System.Windows.Forms.Label();
+            this.richTextBoxErrosSem = new System.Windows.Forms.RichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridTabelaLex)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridTabelaSimbolos)).BeginInit();
             this.SuspendLayout();
@@ -238,11 +240,31 @@
             this.buttonTabelaSimbolos.UseVisualStyleBackColor = true;
             this.buttonTabelaSimbolos.Click += new System.EventHandler(this.buttonTabelaSimbolos_Click);
             // 
+            // labelErrosSemanticos
+            // 
+            this.labelErrosSemanticos.AutoSize = true;
+            this.labelErrosSemanticos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelErrosSemanticos.Location = new System.Drawing.Point(778, 452);
+            this.labelErrosSemanticos.Name = "labelErrosSemanticos";
+            this.labelErrosSemanticos.Size = new System.Drawing.Size(135, 20);
+            this.labelErrosSemanticos.TabIndex = 15;
+            this.labelErrosSemanticos.Text = "Erros Semânticos";
+            // 
+            // richTextBoxErrosSem
+            // 
+            this.richTextBoxErrosSem.Location = new System.Drawing.Point(782, 475);
+            this.richTextBoxErrosSem.Name = "richTextBoxErrosSem";
+            this.richTextBoxErrosSem.Size = new System.Drawing.Size(350, 110);
+            this.richTextBoxErrosSem.TabIndex = 16;
+            this.richTextBoxErrosSem.Text = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1284, 450);
+            this.ClientSize = new System.Drawing.Size(1284, 611);
+            this.Controls.Add(this.richTextBoxErrosSem);
+            this.Controls.Add(this.labelErrosSemanticos);
             this.Controls.Add(this.buttonTabelaSimbolos);
             this.Controls.Add(this.dataGridTabelaSimbolos);
             this.Controls.Add(this.buttonProxFraca);
@@ -261,6 +283,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridTabelaLex)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridTabelaSimbolos)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -277,6 +300,8 @@
         private System.Windows.Forms.Button buttonProxFraca;
         private System.Windows.Forms.DataGridView dataGridTabelaSimbolos;
         private System.Windows.Forms.Button buttonTabelaSimbolos;
+        private System.Windows.Forms.Label labelErrosSemanticos;
+        private System.Windows.Forms.RichTextBox richTextBoxErrosSem;
     }
 }
 
