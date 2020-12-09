@@ -72,7 +72,7 @@ namespace CompiladorInterface {
                                             escopoAtual--;
                                             continue;
                                         }
-                                        if (linhaRotulos[i] == tabelaSimbolos.Rows[j]["Lexema"].ToString()) {//Verificar variável
+                                        if (linhaLexemas[i] == tabelaSimbolos.Rows[j]["Lexema"].ToString()) {//Verificar variável
                                             if (i - 1 >= 0) {
                                                 if (linhaRotulos[i - 1] == "PR") {
                                                     erroPossivel = "ERRO Variável " + linhaLexemas[i] + " já foi declarada próximo a linha " + (linhaCodigo + 1);
@@ -86,6 +86,9 @@ namespace CompiladorInterface {
                                                 listaErros.Add(erroPossivel);
                                                 break;
                                             }
+                                            erroPossivel = "Repetida";
+                                            break;
+
                                         }
                                     }
                                     else {
@@ -104,7 +107,7 @@ namespace CompiladorInterface {
                                     novaLinha["Escopo"] = nivelEscopo;
                                     tabelaSimbolos.Rows.Add(novaLinha);
                                 }
-                                else {
+                                else if (erroPossivel != "Repetida") {
                                     listaErros.Add("ERRO Variável " + linhaLexemas[i] + " não foi declarada próximo a linha " + (linhaCodigo + 1));
                                 }
                             }
