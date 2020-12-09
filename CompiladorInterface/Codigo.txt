@@ -2,16 +2,21 @@
 c = 3 + 5 * 9;
 int a = 5;
 a = 3;
-b = a + 3 * iden2;
+int b = a + 3 * iden2;
 d = ( a + 3 * x );
 c * 5 + 2 * 3;
 ( 3 + 2 ) * f;
+x = 2 + 3.4;
 
 int main() {
  float b;
  b = 4 + 6 * 3;
  m = b + 10;
+ double d;
 }
+d = 99;
+a = x + 2;
+c = 10;
 3 + 3;
 
 

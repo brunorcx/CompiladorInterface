@@ -254,7 +254,7 @@
             // 
             this.richTextBoxErrosSem.Location = new System.Drawing.Point(782, 475);
             this.richTextBoxErrosSem.Name = "richTextBoxErrosSem";
-            this.richTextBoxErrosSem.Size = new System.Drawing.Size(350, 110);
+            this.richTextBoxErrosSem.Size = new System.Drawing.Size(490, 110);
             this.richTextBoxErrosSem.TabIndex = 16;
             this.richTextBoxErrosSem.Text = "";
             // 
