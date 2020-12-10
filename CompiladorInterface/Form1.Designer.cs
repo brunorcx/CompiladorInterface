@@ -31,6 +31,10 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             this.ModificarCodigo = new System.Windows.Forms.Button();
             this.GerarTabela = new System.Windows.Forms.Button();
             this.dataGridTabelaLex = new System.Windows.Forms.DataGridView();
@@ -45,8 +49,11 @@
             this.buttonTabelaSimbolos = new System.Windows.Forms.Button();
             this.labelErrosSemanticos = new System.Windows.Forms.Label();
             this.richTextBoxErrosSem = new System.Windows.Forms.RichTextBox();
+            this.buttonCodInter = new System.Windows.Forms.Button();
+            this.dataGridViewCodInter = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridTabelaLex)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridTabelaSimbolos)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCodInter)).BeginInit();
             this.SuspendLayout();
             // 
             // ModificarCodigo
@@ -244,7 +251,7 @@
             // 
             this.labelErrosSemanticos.AutoSize = true;
             this.labelErrosSemanticos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelErrosSemanticos.Location = new System.Drawing.Point(778, 452);
+            this.labelErrosSemanticos.Location = new System.Drawing.Point(778, 466);
             this.labelErrosSemanticos.Name = "labelErrosSemanticos";
             this.labelErrosSemanticos.Size = new System.Drawing.Size(135, 20);
             this.labelErrosSemanticos.TabIndex = 15;
@@ -252,17 +259,72 @@
             // 
             // richTextBoxErrosSem
             // 
-            this.richTextBoxErrosSem.Location = new System.Drawing.Point(782, 475);
+            this.richTextBoxErrosSem.Location = new System.Drawing.Point(782, 489);
             this.richTextBoxErrosSem.Name = "richTextBoxErrosSem";
             this.richTextBoxErrosSem.Size = new System.Drawing.Size(490, 110);
             this.richTextBoxErrosSem.TabIndex = 16;
             this.richTextBoxErrosSem.Text = "";
+            // 
+            // buttonCodInter
+            // 
+            this.buttonCodInter.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonCodInter.Location = new System.Drawing.Point(12, 452);
+            this.buttonCodInter.Name = "buttonCodInter";
+            this.buttonCodInter.Size = new System.Drawing.Size(147, 32);
+            this.buttonCodInter.TabIndex = 19;
+            this.buttonCodInter.Text = "Cód. Intermediário";
+            this.buttonCodInter.UseVisualStyleBackColor = true;
+            this.buttonCodInter.Click += new System.EventHandler(this.buttonCodInter_Click);
+            // 
+            // dataGridViewCodInter
+            // 
+            this.dataGridViewCodInter.AllowUserToAddRows = false;
+            this.dataGridViewCodInter.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(224)))), ((int)(((byte)(192)))));
+            this.dataGridViewCodInter.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle9;
+            this.dataGridViewCodInter.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridViewCodInter.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dataGridViewCodInter.BackgroundColor = System.Drawing.Color.White;
+            this.dataGridViewCodInter.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.Tomato;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewCodInter.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
+            this.dataGridViewCodInter.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Info;
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewCodInter.DefaultCellStyle = dataGridViewCellStyle11;
+            this.dataGridViewCodInter.EnableHeadersVisualStyles = false;
+            this.dataGridViewCodInter.GridColor = System.Drawing.SystemColors.ButtonFace;
+            this.dataGridViewCodInter.Location = new System.Drawing.Point(12, 490);
+            this.dataGridViewCodInter.Name = "dataGridViewCodInter";
+            this.dataGridViewCodInter.ReadOnly = true;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewCodInter.RowHeadersDefaultCellStyle = dataGridViewCellStyle12;
+            this.dataGridViewCodInter.Size = new System.Drawing.Size(490, 110);
+            this.dataGridViewCodInter.TabIndex = 20;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1284, 611);
+            this.Controls.Add(this.dataGridViewCodInter);
+            this.Controls.Add(this.buttonCodInter);
             this.Controls.Add(this.richTextBoxErrosSem);
             this.Controls.Add(this.labelErrosSemanticos);
             this.Controls.Add(this.buttonTabelaSimbolos);
@@ -282,6 +344,7 @@
             this.Text = "Compilador";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridTabelaLex)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridTabelaSimbolos)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewCodInter)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -302,6 +365,8 @@
         private System.Windows.Forms.Button buttonTabelaSimbolos;
         private System.Windows.Forms.Label labelErrosSemanticos;
         private System.Windows.Forms.RichTextBox richTextBoxErrosSem;
+        private System.Windows.Forms.Button buttonCodInter;
+        private System.Windows.Forms.DataGridView dataGridViewCodInter;
     }
 }
 

@@ -13,6 +13,7 @@ using System.Windows.Forms;
 namespace CompiladorInterface {
 
     public partial class Form1 : Form {
+        private DataTable tabelaSimbolos;
         private DataTable tabela;
         private int numArvore;
         private int numArvoreFracas;
@@ -116,13 +117,18 @@ namespace CompiladorInterface {
         }
 
         private void buttonTabelaSimbolos_Click(object sender, EventArgs e) {
-            DataTable tabelaSimbolos;
             Semantico semantico = new Semantico(tabela, arvoresFracas);
             tabelaSimbolos = semantico.PreencherTabela();
             dataGridTabelaSimbolos.DataSource = tabelaSimbolos;
             richTextBoxErrosSem.Lines = semantico.listaErros.ToArray();
         }
 
+        private void buttonCodInter_Click(object sender, EventArgs e) {
+            CodInter codInter = new CodInter(tabelaSimbolos, tabela, arvoresFracas);
+            var tabelaCodInter = codInter.PreencherTabela();
+            dataGridViewCodInter.DataSource = tabelaCodInter;
+
+        }
     }
 }
 
