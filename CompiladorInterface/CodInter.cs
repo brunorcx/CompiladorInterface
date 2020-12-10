@@ -13,6 +13,7 @@ namespace CompiladorInterface {
         private DataTable tabelaLexica;
         private List<TreeNode> arvores;
         private List<string> listaArvoreSimplificada = new List<string>();
+        private int linhaDoCod = 1;
 
         public CodInter(DataTable tabelaSimbolos, DataTable tabelaLexica, List<TreeNode> listaArvore) {
             this.tabelaSimbolos = tabelaSimbolos;
@@ -27,6 +28,7 @@ namespace CompiladorInterface {
             tabelaCodInter.Columns.Add("Arg1", typeof(String));
             tabelaCodInter.Columns.Add("Arg2", typeof(String));
             tabelaCodInter.Columns.Add("Resultado", typeof(String));
+            tabelaCodInter.Columns.Add("Linha", typeof(String));
 
             return tabelaCodInter;
         }
@@ -62,6 +64,8 @@ namespace CompiladorInterface {
                         }// Fim CASO 2
                     }
 
+                    linhaLexemas.Clear();
+                    linhaRotulos.Clear();
                     linhaCodigo++;
                 }
                 linhaTabela++;
@@ -69,7 +73,6 @@ namespace CompiladorInterface {
                     break;
                 }
             }
-
             return tabelaCodInter;
         }
 
@@ -106,8 +109,8 @@ namespace CompiladorInterface {
         }
 
         private List<DataRow> GerarCodigoLinha(TreeNode arvore, DataTable tabelaCod) {
-            int numLinha = 0;
             List<DataRow> linhas = new List<DataRow>();
+            int numLinha = 0;
             DataRow novaLinha = tabelaCod.NewRow();
             ArvoreSimplificada(arvore);
             //TODO: rodar e ver o que está acontecendo com debugger
@@ -116,6 +119,8 @@ namespace CompiladorInterface {
                 novaLinha["Arg1"] = listaArvoreSimplificada[0];
                 novaLinha["Resultado"] = listaArvoreSimplificada[0];
                 linhas.Add(novaLinha);
+                listaArvoreSimplificada.Clear();
+                novaLinha["Linha"] = linhaDoCod++;
                 return linhas;
             }
             foreach (var terminal in listaArvoreSimplificada) {
@@ -126,12 +131,14 @@ namespace CompiladorInterface {
                     novaLinha["Operador"] = terminal;
                 }
                 else {
-                    if (novaLinha["Arg1"] == null) {
+                    if (novaLinha["Arg1"].ToString() == String.Empty) {
                         if (numLinha > 0) {
                             novaLinha["Arg1"] = linhas[numLinha - 1]["Resultado"];
                             novaLinha["Arg2"] = terminal;
                             novaLinha["Resultado"] = "t" + numLinha;
                             numLinha++;
+                            novaLinha["Linha"] = linhaDoCod;
+                            linhas.Add(novaLinha);
                         }
                         else {
                             novaLinha["Arg1"] = terminal;
@@ -145,6 +152,7 @@ namespace CompiladorInterface {
                             novaLinha["Resultado"] = "t" + numLinha;
                             numLinha++;
                             linhas.Add(novaLinha);
+                            novaLinha["Linha"] = linhaDoCod;
                         }
                     }
                 }
@@ -152,6 +160,7 @@ namespace CompiladorInterface {
             }
 
             listaArvoreSimplificada.Clear();
+            novaLinha["Linha"] = linhaDoCod++;
             return linhas;
         }
 
