@@ -199,7 +199,6 @@ namespace CompiladorInterface {
 
                                 }
                             }//Fim Caso 5
-                             //TODO: Fazer caso = para rodar até o final do for L57 e PULAR VARIÁVEIS DO LADO DIREITO e verificar soma de inteiros/doubles
                             novaLinha = null;
                         }//Fim for próximo lexema
                     }

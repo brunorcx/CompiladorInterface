@@ -110,6 +110,14 @@ namespace CompiladorInterface {
             List<DataRow> linhas = new List<DataRow>();
             DataRow novaLinha = tabelaCod.NewRow();
             ArvoreSimplificada(arvore);
+            //TODO: rodar e ver o que está acontecendo com debugger
+            if (listaArvoreSimplificada.Count == 1) {
+                novaLinha["Operador"] = "=";
+                novaLinha["Arg1"] = listaArvoreSimplificada[0];
+                novaLinha["Resultado"] = listaArvoreSimplificada[0];
+                linhas.Add(novaLinha);
+                return linhas;
+            }
             foreach (var terminal in listaArvoreSimplificada) {
                 if (terminal == "*" || terminal == "+") {
                     if (numLinha > 0) {
